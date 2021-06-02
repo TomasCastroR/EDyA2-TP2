@@ -39,7 +39,7 @@ filterS_ p s = [a | a <-s , p a]
 
 appendS_ [] sb = sb
 appendS_ sa [] = sa
-appendS_ sa sb = sa ++ sb
+appendS_ (a:sa) sb = a: (appendS_ sa sb)
 
 takeS_ _ n      | n <= 0 =  []
 takeS_ [] _              =  []
