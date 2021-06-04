@@ -17,7 +17,7 @@ instance Seq [] where
   showtS = showtS_
   showlS = showlS_
   joinS = joinS_
-  --reduceS = reduceS_
+  reduceS = reduceS_
   --scanS = scanS_
   fromList = fromList_
 
@@ -31,7 +31,7 @@ nthS_ s n = s !! n
 
 tabulateS__ f 0 _ = emptyS_ 
 tabulateS__ f n i = let (x, xs) = f i ||| tabulateS__ f (n-1) (i+1)
-                    in x:xs
+                    in x:xs 
 
 tabulateS_ f n = tabulateS__ f n 0
   
@@ -48,16 +48,14 @@ appendS_ [] sb = sb
 appendS_ sa [] = sa
 appendS_ (a:sa) sb = a: (appendS_ sa sb)
 
-takeS_ _ n      | n <= 0 =  []
-takeS_ [] _              =  []
-takeS_ (x:xs) n          =  x : takeS_ xs (n-1)
+takeS_ s n = take n s
 
 dropS_ s n = drop n s
 
 showtS_ [] = EMPTY
 showtS_ [x] = ELT x
-showtS_ xs = let largo = lengthS_ xs 
-                 (l,r) = (takeS_ xs (div largo 2)) ||| (dropS_ xs (div largo 2))
+showtS_ xs = let largo = div (lengthS_ xs) 2
+                 (l, r) = (takeS_ xs largo) ||| (dropS_ xs largo)
              in NODE l r
 
 showlS_ [] = NIL
@@ -66,23 +64,16 @@ showlS_ (x:xs) = CONS x xs
 joinS_ [] = emptyS_ 
 joinS_ (x:xs) = appendS_ x (joinS_ xs)
 
-loga_b :: Int -> Int -> Int
-loga_b a b
-  | b < 0 || a < 0 = signum a * signum b * loga_b (abs a) (abs b)
-  | b < a     = 0
-  | b >= a     = 1 + loga_b a (b `div` a)
+contraer :: (a -> a -> a) -> [a] -> [a]
+contraer _ [] = []
+contraer _ [x] = [x]
+contraer f (x:y:xs) = let (z,zs) = f x y ||| contraer f xs
+                      in z:zs
 
-reduceS__ _ [x] = x
-reduceS__ f xs = let n = lengthS_ xs
-                     pp = 2^(loga_b 2 (n-1)) 
-                 in f (reduceS__ f (takeS_ xs pp)) (reduceS__ f (dropS_ xs pp)) 
-                  
-reduceS_ f e xs = f e (reduceS__ f xs)
-                            
--- [1,2,3,4,5] = e f (((1f2) f (3f4))f5)) 
---[1,2,3,4,5,6,7,8,9,10] = (((((1+2) + (3+4)) + (5+6)) + (7+8)) +(9+10))
--- [1+2,3+4,]
--- reduceBarato (+) 0 [1,2,3,4,5]
--- 1 (+) (2  (+) (3 + (4 + (5 + 0))))
+reduceS_ _ b [] = b
+reduceS_ f b [x] = f b x
+reduceS_ f b xs = reduceS_ f b (contraer f xs)
+
+--scanS__ f e xs =
 
 fromList_ as = as 
