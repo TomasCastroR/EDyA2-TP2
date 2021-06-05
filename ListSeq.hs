@@ -78,13 +78,14 @@ scanSContExp _ _ e [] = (singletonS_ e, e)
 scanSContExp _ f e [x] = (singletonS_ e, f e x)
 scanSContExp exp f e xs = exp f xs (scanSContExp exp f e (contraer f xs))
 
-scanS_ f e xs = scanSContExp expandir f e xs
-
 es_par i = (rem i 2) == 0
+
+reconstruir f xs ys i = if es_par i then nthS_ ys (div i 2)
+                                    else f (nthS_ ys (div i 2)) (nthS_ xs (i-1))
 
 expandir f xs (ys, r) = (tabulateS_ (reconstruir f xs ys) (lengthS_ xs), r)
 
-reconstruir f xs ys i = if es_par i then nthS_ ys (div i 2)
-                                    else f (nthS_ ys (div i 2)) (nthS_ xs (i-1)) 
+scanS_ f e xs = scanSContExp expandir f e xs
+ 
 
 fromList_ s = s 
