@@ -18,7 +18,7 @@ instance Seq [] where
   showlS = showlS_
   joinS = joinS_
   reduceS = reduceS_
-  --scanS = scanS_
+  scanS = scanS_
   fromList = fromList_
 
 emptyS_ = []
