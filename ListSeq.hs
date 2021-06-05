@@ -70,10 +70,21 @@ contraer _ [x] = [x]
 contraer f (x:y:xs) = let (z,zs) = f x y ||| contraer f xs
                       in z:zs
 
-reduceS_ _ b [] = b
-reduceS_ f b [x] = f b x
-reduceS_ f b xs = reduceS_ f b (contraer f xs)
+reduceS_ _ e [] = e
+reduceS_ f e [x] = f e x
+reduceS_ f e xs = reduceS_ f e (contraer f xs)
 
---scanS__ f e xs =
+scanSContExp _ _ e [] = (singletonS_ e, e)
+scanSContExp _ f e [x] = (singletonS_ e, f e x)
+scanSContExp exp f e xs = exp f xs (scanSContExp exp f e (contraer f xs))
 
-fromList_ as = as 
+scanS_ f e xs = scanSContExp expandir f e xs
+
+es_par i = (rem i 2) == 0
+
+expandir f xs (ys, r) = (tabulateS_ (reconstruir f xs ys) (lengthS_ xs), r)
+
+reconstruir f xs ys i = if es_par i then nthS_ ys (div i 2)
+                                    else f (nthS_ ys (div i 2)) (nthS_ xs (i-1)) 
+
+fromList_ s = s 
