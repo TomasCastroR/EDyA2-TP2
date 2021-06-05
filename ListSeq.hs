@@ -28,12 +28,11 @@ singletonS_ a = [a]
 lengthS_ s = length s
 
 nthS_ s n = s !! n
-
-tabulateS__ f 0 _ = emptyS_ 
-tabulateS__ f n i = let (x, xs) = f i ||| tabulateS__ f (n-1) (i+1)
-                    in x:xs 
-
-tabulateS_ f n = tabulateS__ f n 0
+ 
+tabulateS_ f n = tabulateS' f n 0 where 
+              tabulateS' f 0 _ = emptyS_ 
+              tabulateS' f n i = let (x, xs) = f i ||| tabulateS' f (n-1) (i+1)
+              in x:xs
   
 
 mapS_ f [] = emptyS_ 
