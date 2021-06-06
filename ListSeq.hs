@@ -29,10 +29,11 @@ lengthS_ s = length s
 
 nthS_ s n = s !! n
  
-tabulateS_ f n = tabulateS' f n 0 where 
-              tabulateS' f 0 _ = emptyS_ 
-              tabulateS' f n i = let (x, xs) = f i ||| tabulateS' f (n-1) (i+1)
-                                 in x:xs
+tabulateS_ f n = tabulateS' f n 0 
+                 where 
+                  tabulateS' f 0 _ = emptyS_ 
+                  tabulateS' f n i = let (x, xs) = f i ||| tabulateS' f (n-1) (i+1)
+                                    in x:xs
   
 
 mapS_ f [] = emptyS_ 
