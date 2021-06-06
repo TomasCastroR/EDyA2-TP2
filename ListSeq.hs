@@ -33,16 +33,16 @@ tabulateList f n = tabulateList' f n 0
                  where 
                   tabulateList' f 0 _ = emptyList 
                   tabulateList' f n i = let (x, xs) = f i ||| tabulateList' f (n-1) (i+1)
-                                    in x:xs
+                                        in x:xs
   
 
 mapList f [] = emptyList 
 mapList f (x:xs) = let (y, ys) = f x ||| mapList f xs
-                 in y:ys
+                   in y:ys
 
 filterList _ [] = emptyList 
-filterList p (x:xs) = let (y, ys) = p x ||| filterList p xs
-                    in if y then x : ys else ys 
+filterList p (x:xs) = let (bool, ys) = p x ||| filterList p xs
+                      in if bool then x : ys else ys 
 
 appendList [] sb = sb
 appendList sa [] = sa
@@ -56,7 +56,7 @@ showtList [] = EMPTY
 showtList [x] = ELT x
 showtList xs = let largo = div (lenghtList xs) 2
                    (l, r) = (takeList xs largo) ||| (dropList xs largo)
-             in NODE l r
+               in NODE l r
 
 showlList [] = NIL
 showlList (x:xs) = CONS x xs
@@ -77,7 +77,7 @@ reduceList f e xs = reduceList f e (contraer f xs)
 scanList _ e [] = (emptyList , e)
 scanList f e [x] = (singletonList e, f e x)
 scanList f e xs = let (ys, r) = scanList f e (contraer f xs)
-                in (expandirSeq f xs ys, r) 
+                  in (expandirSeq f xs ys, r) 
                 where
                   expandirSeq _ [] _ = []
                   expandirSeq _ [_] [y] = [y]
