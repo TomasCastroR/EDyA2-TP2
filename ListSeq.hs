@@ -90,11 +90,11 @@ scanS_ f e xs = scanSContExp expandir f e xs-}
 scanS_ _ e [] = (emptyS_ , e)
 scanS_ f e [x] = (singletonS_ e, f e x)
 scanS_ f e xs = let (ys, r) = scanS_ f e (contraer f xs)
-                in (expandir f xs ys True, r) 
+                in (expandirSeq f xs ys True, r) 
                 where
-                  expandir _ [] _ _ = []
-                  expandir _ _ [] _ = []
-                  expandir _ [x] [y] _ = [y]
-                  expandir f seq1@(x:_:xs) seq2@(y:ys) par = if par then y:expandir f seq1 seq2 False
-                                                                    else (f y x):expandir f xs ys True
+                  expandirSeq _ [] _ _ = []
+                  expandirSeq _ _ [] _ = []
+                  expandirSeq _ [x] [y] _ = [y]
+                  expandirSeq f seq1@(x:_:xs) seq2@(y:ys) par = if par then y:expandirSeq f seq1 seq2 False
+                                                                       else (f y x):expandirSeq f xs ys True
 fromList_ s = s 
