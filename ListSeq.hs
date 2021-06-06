@@ -81,5 +81,5 @@ scanList f e xs = let (ys, r) = scanList f e (contraer f xs)
                 where
                   expandirSeq _ [] _ = []
                   expandirSeq _ [_] [y] = [y]
-                  expandirSeq f (x:_:xs) (y:ys) = let (z, zs) = (f y x) ||| expandirSeq f xs ys in y : z : zs
+                  expandirSeq f (x:_:xs) (y:ys) = let (z, zs) = (f y x) ||| expandirSeq f xs ys in y:z:zs
 fromList_ s = s 
