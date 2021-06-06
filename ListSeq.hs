@@ -95,6 +95,6 @@ scanS_ f e xs = let (ys, r) = scanS_ f e (contraer f xs)
                   expandir _ [] _ _ = []
                   expandir _ _ [] _ = []
                   expandir _ [x] [y] _ = [y]
-                  expandir f seq1@(x:xx:xs) seq2@(y:ys) par = if par then y:expandir f seq1 seq2 False
-                                                                        else (f y x):expandir f xs ys True
+                  expandir f seq1@(x:_:xs) seq2@(y:ys) par = if par then y:expandir f seq1 seq2 False
+                                                                    else (f y x):expandir f xs ys True
 fromList_ s = s 
