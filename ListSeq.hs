@@ -74,19 +74,6 @@ reduceS_ _ e [] = e
 reduceS_ f e [x] = f e x
 reduceS_ f e xs = reduceS_ f e (contraer f xs)
 
-{-scanSContExp _ _ e [] = (emptyS_ , e)
-scanSContExp _ f e [x] = (singletonS_ e, f e x)
-scanSContExp exp f e xs = exp f xs (scanSContExp exp f e (contraer f xs))
-
-es_par i = (rem i 2) == 0
-
-reconstruir f xs ys i = if es_par i then nthS_ ys (div i 2)
-                                    else f (nthS_ ys (div i 2)) (nthS_ xs (i-1))
-
-expandir f xs (ys, r) = (tabulateS_ (reconstruir f xs ys) (lengthS_ xs), r)
-
-scanS_ f e xs = scanSContExp expandir f e xs-}
-
 scanS_ _ e [] = (emptyS_ , e)
 scanS_ f e [x] = (singletonS_ e, f e x)
 scanS_ f e xs = let (ys, r) = scanS_ f e (contraer f xs)
