@@ -32,7 +32,7 @@ nthS_ s n = s !! n
 tabulateS_ f n = tabulateS' f n 0 where 
               tabulateS' f 0 _ = emptyS_ 
               tabulateS' f n i = let (x, xs) = f i ||| tabulateS' f (n-1) (i+1)
-              in x:xs
+                                 in x:xs
   
 
 mapS_ f [] = emptyS_ 
@@ -64,8 +64,8 @@ joinS_ [] = emptyS_
 joinS_ (x:xs) = appendS_ x (joinS_ xs)
 
 contraer :: (a -> a -> a) -> [a] -> [a]
-contraer _ [] = []
-contraer _ [x] = [x]
+contraer _ [] = emptyS_
+contraer _ [x] = singletonS_ x
 contraer f (x:y:xs) = let (z,zs) = f x y ||| contraer f xs
                       in z:zs
 
@@ -73,7 +73,7 @@ reduceS_ _ e [] = e
 reduceS_ f e [x] = f e x
 reduceS_ f e xs = reduceS_ f e (contraer f xs)
 
-scanSContExp _ _ e [] = (singletonS_ e, e)
+{-scanSContExp _ _ e [] = (emptyS_ , e)
 scanSContExp _ f e [x] = (singletonS_ e, f e x)
 scanSContExp exp f e xs = exp f xs (scanSContExp exp f e (contraer f xs))
 
@@ -84,7 +84,16 @@ reconstruir f xs ys i = if es_par i then nthS_ ys (div i 2)
 
 expandir f xs (ys, r) = (tabulateS_ (reconstruir f xs ys) (lengthS_ xs), r)
 
-scanS_ f e xs = scanSContExp expandir f e xs
- 
+scanS_ f e xs = scanSContExp expandir f e xs-}
 
+scanS_ _ e [] = (emptyS_ , e)
+scanS_ f e [x] = (singletonS_ e, f e x)
+scanS_ f e xs = let (ys, r) = scanS_ f e (contraer f xs)
+                in (reconstruir f xs ys True, r) 
+                where
+                  reconstruir _ [] _ _ = []
+                  reconstruir _ _ [] _ = []
+                  reconstruir _ [x] [y] _ = [y]
+                  reconstruir f seq1@(x:xx:xs) seq2@(y:ys) par = if par then y:reconstruir f seq1 seq2 False
+                                                                        else (f y x):reconstruir f xs ys True
 fromList_ s = s 
