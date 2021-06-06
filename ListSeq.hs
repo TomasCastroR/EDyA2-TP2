@@ -64,22 +64,23 @@ showlList (x:xs) = CONS x xs
 joinList [] = emptyList 
 joinList (x:xs) = appendList x (joinList xs)
 
-contraer :: (a -> a -> a) -> [a] -> [a]
-contraer _ [] = emptyList
-contraer _ [x] = singletonList x
-contraer f (x:y:xs) = let (z,zs) = f x y ||| contraer f xs
+contraerList :: (a -> a -> a) -> [a] -> [a]
+contraerList _ [] = emptyList
+contraerList _ [x] = singletonList x
+contraerList f (x:y:xs) = let (z,zs) = f x y ||| contraerList f xs
                       in z:zs
 
 reduceList _ e [] = e
 reduceList f e [x] = f e x
-reduceList f e xs = reduceList f e (contraer f xs)
+reduceList f e xs = reduceList f e (contraerList f xs)
 
 scanList _ e [] = (emptyList , e)
 scanList f e [x] = (singletonList e, f e x)
-scanList f e xs = let (ys, r) = scanList f e (contraer f xs)
+scanList f e xs = let (ys, r) = scanList f e (contraerList f xs)
                   in (expandirSeq f xs ys, r) 
                 where
                   expandirSeq _ [] _ = []
-                  expandirSeq _ [_] [y] = [y]
+                  expandirSeq _ [_] ys = ys
                   expandirSeq f (x:_:xs) (y:ys) = let (z, zs) = (f y x) ||| expandirSeq f xs ys in y:z:zs
+
 fromList_ s = s 
