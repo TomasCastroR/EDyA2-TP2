@@ -20,22 +20,18 @@ instance Seq A.Arr where
   showlS = showlArr
   joinS = joinArr
   reduceS = reduceArr
-  --scanS = scanArr
+  scanS = scanArr
   fromList = fromListArr
 
 emptyArr = A.empty 
 
 singletonArr x = A.fromList [x]
 
-nthArr = (!)
-
 lengthArr = A.length
 
+nthArr = (!)
+
 tabulateArr = A.tabulate
-
-joinArr = A.flatten
-
-fromListArr = A.fromList
 
 mapArr f arr = let largo = lengthArr arr 
                in  tabulateArr (\i -> (f (nthArr arr i))) largo
@@ -61,6 +57,9 @@ showlArr arr  | largo == 0 = NIL
               | otherwise = CONS (nthArr arr 0) (dropArr arr 1)
               where largo = lengthArr arr
 
+joinArr = A.flatten
+
+contraer :: (a->a->a)-> A.Arr a -> Int -> A.Arr a
 contraer f arr largo | even largo  = tabulateArr (\i -> f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) rango
                      | otherwise   = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
                      where rango = (div largo 2)
@@ -79,3 +78,5 @@ scanArr f e arr | largo == 0 = (emptyArr, e)
                 where
                   largo = lengthArr arr
                   expandirArr f arr brr = tabulateArr (\i -> if even i then (nthArr brr (div i 2)) else f (nthArr brr (div i 2)) (nthArr arr (i - 1))) largo
+
+fromListArr = A.fromList
