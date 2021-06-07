@@ -62,7 +62,7 @@ showlArr arr  | largo == 0 = NIL
               where largo = lengthArr arr
 
 contraer f arr largo | even largo  = tabulateArr (\i -> f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) rango
-                     | otherwise = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
+                     | otherwise   = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
                      where rango = (div largo 2)
 
 reduceArr f e arr | largo == 0  = e
@@ -78,4 +78,4 @@ scanArr f e arr | largo == 0 = (emptyArr, e)
                               in (expandirArr f arr brr, r)
                 where
                   largo = lengthArr arr
-                  expandirArr f arr brr =  -- completar
+                  expandirArr f arr brr = tabulateArr (\i -> if even i then (nthArr brr (div i 2)) else f (nthArr brr (div i 2)) (nthArr arr (i - 1))) largo
