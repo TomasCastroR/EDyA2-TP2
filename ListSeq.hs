@@ -77,10 +77,10 @@ reduceList f e xs = reduceList f e (contraerList f xs)
 scanList _ e [] = (emptyList , e)
 scanList f e [x] = (singletonList e, f e x)
 scanList f e xs = let (ys, r) = scanList f e (contraerList f xs)
-                  in (expandirSeq f xs ys, r) 
+                  in (expandirList f xs ys, r) 
                 where
-                  expandirSeq _ [] _ = []
-                  expandirSeq _ [_] ys = ys
-                  expandirSeq f (x:_:xs) (y:ys) = let (z, zs) = (f y x) ||| expandirSeq f xs ys in y:z:zs
+                  expandirList _ [] _ = []
+                  expandirList _ [_] ys = ys
+                  expandirList f (x:_:xs) (y:ys) = let (z, zs) = (f y x) ||| expandirList f xs ys in y:z:zs
 
 fromList_ s = s 
