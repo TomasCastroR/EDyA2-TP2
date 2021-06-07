@@ -66,9 +66,9 @@ joinList (x:xs) = appendList x (joinList xs)
 
 contraerList :: (a -> a -> a) -> [a] -> [a]
 contraerList _ [] = emptyList
-contraerList _ [x] = singletonList x
+contraerList _ l@[x] = l
 contraerList f (x:y:xs) = let (z,zs) = f x y ||| contraerList f xs
-                      in z:zs
+                          in z:zs
 
 reduceList _ e [] = e
 reduceList f e [x] = f e x
