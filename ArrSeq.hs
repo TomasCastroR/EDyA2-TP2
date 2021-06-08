@@ -40,7 +40,10 @@ filterArr p arr = joinArr (mapArr (\x -> if p x then singletonArr x else emptyAr
 
 appendArr arr brr = let n = lengthArr arr
                         m = lengthArr brr
-                    in tabulateArr (\i -> if i < n then nthArr arr i else nthArr brr i) (n+m)
+                    in tabulateArr copiar (n+m)
+                  where
+                    copiar i | i < n = nthArr arr i
+                             | otherwise = nthArr brr i
 
 takeArr arr n = let largo = lengthArr arr
                 in if largo < n then arr else A.subArray 0 n arr
@@ -60,9 +63,13 @@ showlArr arr  | largo == 0 = NIL
 joinArr = A.flatten
 
 contraerArr :: (a->a->a)-> A.Arr a -> Int -> A.Arr a
-contraerArr f arr largo | even largo = tabulateArr (\i -> f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) rango
-                        | otherwise  = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
-                        where rango = (div largo 2)
+contraerArr f arr largo | even largo = tabulateArr contraerPar rango
+                        | otherwise  = tabulateArr contraerImpar (rango+1)
+                        where 
+                          rango = (div largo 2)
+                          contraerPar i = f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))
+                          contraerImpar i | i == rango =  nthArr arr (2*i)
+                                          | otherwise = contraerPar i
 
 reduceArr f e arr | largo == 0  = e
                   | largo == 1  = f e (nthArr arr 0)
