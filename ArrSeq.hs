@@ -59,20 +59,20 @@ showlArr arr  | largo == 0 = NIL
 
 joinArr = A.flatten
 
-contraer :: (a->a->a)-> A.Arr a -> Int -> A.Arr a
-contraer f arr largo | even largo  = tabulateArr (\i -> f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) rango
-                     | otherwise   = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
-                     where rango = (div largo 2)
+contraerArr :: (a->a->a)-> A.Arr a -> Int -> A.Arr a
+contraerArr f arr largo | even largo  = tabulateArr (\i -> f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) rango
+                        | otherwise   = tabulateArr (\i -> if i == rango then nthArr arr (2*i) else f (nthArr arr (2*i)) (nthArr arr ((2*i)+1))) (rango+1)
+                        where rango = (div largo 2)
 
 reduceArr f e arr | largo == 0  = e
                   | largo == 1  = f e (nthArr arr 0)
-                  | otherwise = let ctr = contraer f arr largo
+                  | otherwise = let ctr = contraerArr f arr largo
                                 in reduceArr f e ctr
                   where largo = lengthArr arr
 
 scanArr f e arr | largo == 0 = (emptyArr, e)
                 | largo == 1 = (singletonArr e, f e (nthArr arr 0))
-                | otherwise = let ctr = contraer f arr largo
+                | otherwise = let ctr = contraerArr f arr largo
                                   (brr, r) = scanArr f e ctr
                               in (expandirArr f arr brr, r)
                 where
