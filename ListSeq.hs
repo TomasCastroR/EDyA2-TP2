@@ -72,7 +72,8 @@ contraerList f (x:y:xs) = let (z,zs) = f x y ||| contraerList f xs
 
 reduceList _ e []  = e
 reduceList f e [x] = f e x
-reduceList f e xs  = reduceList f e (contraerList f xs)
+reduceList f e xs  = let ctr = contraerList f xs
+                     in reduceList f e ctr
 
 scanList _ e []  = (emptyList , e)
 scanList f e [x] = (singletonList e, f e x)
