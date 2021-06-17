@@ -43,7 +43,7 @@ appendArr arr brr = let n = lengthArr arr
                     in tabulateArr copiar (n+m)
                   where
                     copiar i | i < n = nthArr arr i
-                             | otherwise = nthArr brr i
+                             | otherwise = nthArr brr (i - n)
 
 takeArr arr n = let largo = lengthArr arr
                 in if largo < n then arr else A.subArray 0 n arr
